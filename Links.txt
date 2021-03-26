@@ -1,0 +1,2 @@
+http://dev.tazteq.com:5488/
+http://qa.tazteq.com:5488/	

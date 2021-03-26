@@ -1,0 +1,41 @@
+FROM debian:stretch
+ENV SETUPS_HOME /opt/setups
+ENV JAVA_HOME /usr/local/java
+RUN apt-get update && apt-get install -y apt-transport-https
+RUN apt-get update && apt-get install net-tools
+#RUN mkdir /etc/yum.repos.d_backup/ && mv /etc/yum.repos.d/* $_
+#COPY /repo/nexus.repo /etc/yum.repos.d/nexus.repo
+RUN mkdir -p $SETUPS_HOME \
+&& apt-get install -y wget \
+&& wget --user admin --password Ges@2017 http://192.168.0.160:8081/repository/gbpo-raw-wget/server-jre-8u162-linux-x64.tar.gz -O $SETUPS_HOME/server-jre-8u162-linux-x64.tar.gz
+###################################### Server JRE 8 Installation - Start ######################################
+RUN mkdir -p $JAVA_HOME \
+&& cd $SETUPS_HOME \
+&& tar xf server-jre-8u162-linux-x64.tar.gz \
+&& mv -v $SETUPS_HOME/jdk1.8.0_162/* $JAVA_HOME \
+&& chmod -R g+rw $JAVA_HOME 
+ENV PATH $PATH:$JAVA_HOME/bin
+###################################### Server JRE 8 Installation - End ######################################
+# Expose the ports we're interested in
+EXPOSE 5555 5556 9300-9400
+# Cleanup dependencies
+#RUN yum -y erase wget \
+#&& rm -rf $SETUPS_HOME \
+#&& yum clean all
+##
+## Bootstrap Scripts
+##
+# Add the docker entrypoint script
+ADD ./scripts/docker-entrypoint.sh /usr/local/docker-entrypoint.sh
+# Change the ownership
+RUN chmod a+x /usr/local/docker-entrypoint.sh
+ENTRYPOINT ["/usr/local/docker-entrypoint.sh"]
+#ENTRYPOINT ["/bin/bash"]
+white_check_mark
+eyes
+raised_hands
+
+
+
+
+
